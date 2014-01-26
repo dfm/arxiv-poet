@@ -42,7 +42,8 @@ def parse_tex(tex):
             continue
         paragraphs.append(map(word_tokenize, sent_tokenize(txt)))
 
-    return [map(clean_word, s) for p in paragraphs for s in p if len(s)]
+    return [[w for w in map(clean_word, s) if len(w)]
+            for p in paragraphs for s in p if len(s)]
 
 
 def get_article(arxiv_id, clobber=False):
