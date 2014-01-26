@@ -13,10 +13,15 @@ import requests
 import tempfile
 import subprocess
 from bs4 import BeautifulSoup
+
 from nltk import sent_tokenize, word_tokenize
 
 
 DATA_DIR = "data"
+
+
+def clean_word(w):
+    return w.strip("$*")
 
 
 def parse_tex(tex):
@@ -24,11 +29,11 @@ def parse_tex(tex):
     with tempfile.NamedTemporaryFile(suffix=".tex") as tex_f:
         tex_f.write(tex)
         tex_f.flush()
-        with tempfile.NamedTemporaryFile(suffix=".html") as html_f:
-            subprocess.check_call(["pandoc", tex_f.name, "-o", html_f.name])
-            body = html_f.read()
+        with tempfile.NamedTemporaryFile(suffix=".html") as txt_f:
+            subprocess.check_call(["pandoc", tex_f.name, "-o", txt_f.name])
+            body = txt_f.read().decode("utf-8")
 
-    # Parse the HTML
+    # Parse the HTML.
     tree = BeautifulSoup(body)
     paragraphs = []
     for p in tree.find_all("p"):
@@ -37,7 +42,7 @@ def parse_tex(tex):
             continue
         paragraphs.append(map(word_tokenize, sent_tokenize(txt)))
 
-    return [s for p in paragraphs for s in p if len(s)]
+    return [map(clean_word, s) for p in paragraphs for s in p if len(s)]
 
 
 def get_article(arxiv_id, clobber=False):
@@ -73,5 +78,8 @@ def get_article(arxiv_id, clobber=False):
 
 
 if __name__ == "__main__":
-    print(get_article("1309.0653"))
-    # print(get_article("1202.3665"))
+    import sys
+    aid = "1309.0653"
+    if len(sys.argv) > 1:
+        aid = sys.argv[1]
+    print("\n".join(map(" ".join, get_article(aid))).encode("utf-8"))
