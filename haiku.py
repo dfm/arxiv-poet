@@ -4,14 +4,10 @@ import string
 import numpy as np
 import arxiv
 
-sentence = "We introduce a stable, well tested Python implementation of the affine-invariant ensemble sampler for Markov chain Monte Carlo (MCMC) proposed by Goodman & Weare (2010). The code is open source and has already been used in several published projects in the astrophysics literature."
-
-# st = arxiv.get_article("1202.3665")
-st = arxiv.get_article("1401.6128")
-# st = nltk.sent_tokenize(sentence)
 ph = cmudict.dict()
-sent_syls = np.empty(len(st))
 
+# Count the number of syllables in each word, for each sentence
+# if a word isn't recognised, throw sentence away
 def syl_count(st):
     word = []
     syls = []
@@ -30,48 +26,45 @@ def syl_count(st):
                 return None
     return zip(word, syls)
 
-nsyls = []
-for sentence in st:
-    word_list = syl_count(sentence)
-    if word_list != None:
-#         nsyls.append(sum([w[1] for w in word_list]))
-        if sum([w[1] for w in word_list]) == 17:
-            n = 0
-            m = 0
-            for word in word_list:
-                n += word[1]
-                if n == 5:
-                    for word in word_list:
-                        m += word[1]
-                        if m == 12:
-                            print sentence
+# Find Haikus from list of tuples of words and syllables
+def find_haiku(st):
+    nsyls = []
+    for sentence in st:
+        word_list = syl_count(sentence)
+        if word_list != None:
+            if sum([w[1] for w in word_list]) == 17:
+                n = 0
+                m = 0
+                for word in word_list:
+                    n += word[1]
+                    if n == 5:
+                        for word in word_list:
+                            m += word[1]
+                            if m == 12:
+                                return sentence
+    return 'No Haiku found'
 
-# print nsyls
-# a = np.where(np.array(nsyls) == 17)[0]
-# haiku = st[a]
-# print haiku
-raw_input('enter')
+# Find sentences with 5, 7 or 12 syllables
+def find_alt_forms(st):
+    nsyls = []
+    for sentence in st:
+        word_list = syl_count(sentence)
+        if word_list != None:
+            sylno = sum([w[1] for w in word_list])
+            if sylno == 5: print sylno
+            elif sylno == 7: print sylno
+            elif sylno == 12: print sylno
 
-# Count number of syllables in each sentence
-for i, wt in enumerate(st):
-#     wt = nltk.word_tokenize(s)
-    tot_syls = 0
-    for full_word in wt:
-        if not len(full_word.strip(string.punctuation)): continue
-        words = full_word.split("-")
-        for w in words:
-            try:
-                phs =  ph[w.lower()][0]
-                for p in phs:
-                    tot_syls += (p.count('0') + p.count('1') + p.count('2'))
-            except KeyError:
-                tot_syls = 0
-                break
-#                 print "Failed on: ", w
-    sent_syls[i] = tot_syls
 
-print sent_syls
-a = np.where(sent_syls == 17)[0]
-haiku = st[a[1]]
+def load_paper(arxiv_id):
+    return arxiv.get_article(arxiv_id)
 
-print haiku
+# 1202.3665 emcee paper
+# 1306.3701 Van saders
+# 1307.3239 Tom's paper
+# 1401.6128 Fengji's paper
+sk1 = "1309.0419"
+
+st = load_paper(sk1)
+print find_haiku(st)
+print find_alt_forms(st)
