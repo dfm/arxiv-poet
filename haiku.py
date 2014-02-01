@@ -28,20 +28,34 @@ def syl_count(st):
 
 # Find Haikus from list of tuples of words and syllables
 def find_haiku(st):
-    nsyls = []
+    s51 = []; s7 = []; s52 = []
     for sentence in st:
         word_list = syl_count(sentence)
         if word_list != None:
             if sum([w[1] for w in word_list]) == 17:
-                n = 0
-                m = 0
+                n = 0; m = 0; l = 0
                 for word in word_list:
                     n += word[1]
+                    m += word[1]
+                    l += word[1]
+#                     s51.append(word[0])
                     if n == 5:
                         for word in word_list:
+#                             s7.append(word_list[m][0])
+#                             s7 = word_list[0,5:12]
                             m += word[1]
+                            l += word[1]
                             if m == 12:
-                                return build_sentence(sentence)
+                                for word in word_list:
+#                                     s52.append(word_list[l][0])
+#                                     s52 = word_list[0,12:]
+                                    l += word[1]
+                                    if l == 17:
+#                                         print l
+                                        return build_sentence(sentence)
+#                                         return build_sentence(s51) + "\n", \
+#                                                 build_sentence(s7) + "\n", \
+#                                                 build_sentence(s52)
     return " "
 
 # Find sentences with 5, 7 or 12 syllables
@@ -54,17 +68,17 @@ def find_alt_forms(st):
             if sylno == 5:
                 bs = build_sentence(sentence)
                 if bs.count('.,') == 0:
-                    print "(5)", bs
+#                     print "(5)", bs
                     s5.append(bs)
             elif sylno == 7:
                 bs = build_sentence(sentence)
                 if bs.count('.,') == 0:
-                    print "(7)", bs
+#                     print "(7)", bs
                     s7.append(bs)
             elif sylno == 12:
                 bs = build_sentence(sentence)
                 if bs.count('.,') == 0:
-                    print "(12)", bs
+#                     print "(12)", bs
                     s12.append(bs)
     return s5, s7, s12
 
@@ -73,6 +87,7 @@ def build_haiku(s5, s7, s12):
         return s5[0] + "\n", s7[0] + "\n", s5[1]
     if len(s5) > 0 and len(s12) > 0:
         return s12[0] + "\n", s5[0]
+    return " "
 
 def build_sentence(words):
     s = " "
@@ -95,22 +110,28 @@ def load_paper(arxiv_id):
 
 dfm1 = "1202.3665"
 dfm2 = "1310.4179"
-dfm3 = "1211.6105"
 dfm4 = "1211.5805"
-dfmra1 = "1309.0654"
-dfmra2 = "1309.0653"
-fh1 = "1401.6128" # haiku
 sk2 = "1207.2945"
 sk3 = "1203.5486"
 rs2 = "1106.1885"
 rs3 = "0807.4382"
-bs1 = "1211.0278" # haiku
 bp1 = "1302.6682"
 bp2 = "1305.1934"
+dh1 = "1008.4686" # haiku
+# Data analysis recipes: Fitting a model to data
+dfm3 = "1211.6105" # haiku
+# The Panchromatic Hubble Andromeda Treasury IV. A Probabilistic Approach to Inferring the High Mass Stellar Initial Mass Function and Other Power-law Functions
+dfmra1 = "1309.0654" # haiku
+# Maximizing Kepler science return per telemetered pixel: Searching the habitable zones of the brightest stars
+fh1 = "1401.6128" # haiku
+# The Probabilities of Orbital-Companion Models for Stellar Radial Velocity Data
+bs1 = "1211.0278" # haiku
+# Moderate-Luminosity Growing Black Holes From 1.25 < z < 2.7: Varied Accretion In Disk-Dominated Hosts
+dh2 = "1008.4146"
+bp3 = "1401.7566"
 
-# st = load_paper(bs1)
-# st = load_paper(fh1)
-st = load_paper(dfm3)
+st = load_paper(bp3)
+
 print find_haiku(st)
 s5, s7, s12 = find_alt_forms(st)
 print build_haiku(s5, s7,s12)

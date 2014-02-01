@@ -41,8 +41,8 @@ dh2 = "1008.4146"
 st = load_paper(dh1)
 st.extend(load_paper(dh2))
 rhyme_list = algorhyme(st)
-print len(rhyme_list), "rhymes found"
+# print len(rhyme_list), "rhymes found"
 
-for i in rhyme_list:
-    print i
-    raw_input('enter')
+# for i in rhyme_list:
+#     print i
+#     raw_input('enter')
