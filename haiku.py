@@ -130,8 +130,8 @@ bs1 = "1211.0278" # haiku
 dh2 = "1008.4146"
 bp3 = "1401.7566"
 
-st = load_paper(bp3)
+st = load_paper(bs1)
 
 print find_haiku(st)
 s5, s7, s12 = find_alt_forms(st)
-print build_haiku(s5, s7,s12)
+print build_haiku(s5, s7, s12)
